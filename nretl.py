@@ -117,12 +117,12 @@ class TCPHandler(SocketServer.BaseRequestHandler):
 					#mills_count = (s.unpack_from(end_conv))[0]
 					#print ' - {0}'.format(mills_count)
 
-					'''
-					print "Big Endian"
-					s = struct.Struct('>L')
-					print(s.unpack_from(end_conv))[0]
+					
+					#print "Big Endian"
+					#s = struct.Struct('>L')
+					#print(s.unpack_from(end_conv))[0]
 				
-					'''
+					
 			'''
 			Notes: Conversion process is mangling values. 
 			
@@ -136,19 +136,25 @@ class TCPHandler(SocketServer.BaseRequestHandler):
 			'''
 
 
-			# Format Node:Length:Type:Millis
+			
 			#hex_map = ''.join([binascii.b2a_hex(x) for x in socket_data])
 			#print "Full: {0}".format(hex_map)
 			hex_map = ''.join([binascii.b2a_hex(x) for x in socket_data[4:]])
-			print "Payload: {0}".format(hex_map)
+			#print "Payload: {0}".format(hex_map)
 			
 			# Basic Convert from Little Endian .....
 			#
 			#START HERE
 
 			MILLIS_COUNT = struct.unpack('<L', hex_map.decode('hex'))[0]
-			
-			print "{0}:{1}:{2}:{3}".format(mote_addr, mote_payload_length, mote_payload_type,MILLIS_COUNT)
+			# Format Node:Length:Type:Millis:Hex Payload
+			print "{0}:{1}:{2}:{3}:{4}".format(
+				mote_addr, 
+				mote_payload_length, 
+				mote_payload_type,
+				MILLIS_COUNT,
+				hex_map
+				)
 		except:
 			pass
 		
