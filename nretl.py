@@ -53,6 +53,20 @@ class TCPHandler(SocketServer.BaseRequestHandler):
 		hex_map_format = ''.join([hex(ord(y)) for y in socket_data]) 
 		print hex_map_format
 
+		# Decode binary string into hex array. 
+		# Parse array to decode moteino data
+		# Test Message Type 10 on all Sensors
+
+		hex_map_array = [hex(ord(y)) for y in socket_data]
+		print hex_map_array
+		try:
+			mote_addr = int(hex_map_array[1])
+			mote_payload_length = int(hex_map_array[2]) 
+			mote_payload_type = int(hex_map_array[3]) 
+
+			print "Recieved msg from {0}\n - Length: {1}\n - Type: {2}".format(mote_addr, mote_payload_length, mote_payload_type)
+		except:
+			pass 
 		
 		
 
