@@ -32,11 +32,28 @@ class TCPHandler(SocketServer.BaseRequestHandler):
 
 		#hex_data = socket_data.replace(' ','').decode('hex')
 		#print hex_data
+		'''
+		long hand
 		for x in socket_data:
 			hex_data_element = binascii.b2a_hex(x)
 			print hex_data_element
+		'''
+		# rewrite as list comprehension
+		hex_map = ''.join([binascii.b2a_hex(x) for x in socket_data])
+		print hex_map
 
+		print "Hex Format...."
+		'''
+		# Long hand
+		for y in socket_data:
+			hex_data_element = hex(ord(y))
+			print hex_data_element
+		'''
+		# rewrite as list comprehension
+		hex_map_format = ''.join([hex(ord(y)) for y in socket_data]) 
+		print hex_map_format
 
+		
 		
 
 if __name__ == '__main__':
