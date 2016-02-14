@@ -52,19 +52,76 @@ class TCPHandler(SocketServer.BaseRequestHandler):
 			hex_map = ''.join([binascii.b2a_hex(x) for x in socket_data[4:]])
 			#print "Payload: {0}".format(hex_map)
 			
+			if mote_payload_type == 10:
 
-			MILLIS_COUNT = struct.unpack('<L', hex_map.decode('hex'))[0]
+				MILLIS_COUNT = struct.unpack('<L', hex_map.decode('hex'))[0]
 
-			# Format Node:Length:Type:Millis:Hex Payload
-			print "{0}:{1}:{2}:{3}:{4}".format(
-				mote_addr, 
-				mote_payload_length, 
-				mote_payload_type,
-				MILLIS_COUNT,
-				hex_map
-				)
+				# Format Node:Length:Type:Millis:Hex Payload
+				print "{0}:{1}:{2}:{3}:{4}".format(
+					mote_addr, 
+					mote_payload_length, 
+					mote_payload_type,
+					MILLIS_COUNT,
+					hex_map
+					)
+			if mote_payload_type == 20:
+				# Raw Message Format -> 00200f142abe00b9000000984100003f434b
+				# Payload Only -> 2abe00b9000000984100003f434b
+
+				'''
+				C-Struct
+				typedef struct { 
+					// MESSAGE TYPE = 20
+					// Size = 14 
+					// Add collection message data types for node red parsing
+					byte				bt;		//[1] Byte			
+					int 				si;		//[2] Signed Int
+					unsigned int 		ui;		//[2] Unsigned Int
+					float 				fp; 	//[4] Float
+					double				db; 	//[4] double
+					char				sc;		//[1] Single character 
+				} _ReportMsg;
+				'''
+
+				PAYLOAD = struct.unpack('<BhHffc', hex_map.decode('hex'))
+				'''
+				Note: Struct returns a tuple of values for conversion
+				Test Values
+				o_ReportMsg.bt = 42;
+				o_ReportMsg.si = runCount;
+				o_ReportMsg.ui = runCount - 5;
+				o_ReportMsg.fp = runCount / 10;
+				o_ReportMsg.db = runCount / runCount + runCount;
+				o_ReportMsg.sc = 'K';
+				
+				** Conversion Note from 8 bit controller
+				AVR Type 	Python Struct Type
+				--------	-------------------
+				byte 		B (unsigned char)
+				int 		h (short)
+				u_int 		H (unsigned short)
+				float 		f (float)
+				double 		f (float)
+				char 		c (char)
+
+				'''
+
+				# Format Node:Length:Type:bt,si,ui,fp,db,sc:Hex Payload
+				print "{0}:{1}:{2}:{3}:{4}:{5}:{6}:{7}:{8}:{9}".format(
+					mote_addr, 
+					mote_payload_length, 
+					mote_payload_type,
+					PAYLOAD[0],
+					PAYLOAD[1],
+					PAYLOAD[2],
+					PAYLOAD[3],
+					PAYLOAD[4],
+					PAYLOAD[5],
+					hex_map
+					)
 		except:
 			pass
+
 		
 		
 
