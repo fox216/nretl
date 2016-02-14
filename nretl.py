@@ -105,16 +105,16 @@ class TCPHandler(SocketServer.BaseRequestHandler):
 
 		
 
-				if mote_payload_type == 10:
+				#if mote_payload_type == 10:
 					#print "Process Payload type 10"
-					hex_map = ''.join([binascii.b2a_hex(x) for x in socket_data[4:]])
-					conv_ascii = binascii.unhexlify(hex_map)
-					end_conv = array.array('h', conv_ascii)
-					end_conv.byteswap()
+					#hex_map = ''.join([binascii.b2a_hex(x) for x in socket_data[4:]])
+					#conv_ascii = binascii.unhexlify(hex_map)
+					#end_conv = array.array('h', conv_ascii)
+					#end_conv.byteswap()
 					
 					#print "Little Endian"
-					s = struct.Struct('<L')
-					mills_count = (s.unpack_from(end_conv))[0]
+					#s = struct.Struct('<L')
+					#mills_count = (s.unpack_from(end_conv))[0]
 					#print ' - {0}'.format(mills_count)
 
 					'''
@@ -123,8 +123,32 @@ class TCPHandler(SocketServer.BaseRequestHandler):
 					print(s.unpack_from(end_conv))[0]
 				
 					'''
+			'''
+			Notes: Conversion process is mangling values. 
+			
+			Full: 0020050a15cd5b07
+			
+			Payload: 15cd5b07 <- transmission & parsing is correct	
+			
+			MILLIS_COUNT = struct.unpack('<L', '15cd5b07'.decode('hex'))[0] = 123456789
+
+			32:5:10:1527190989 <- Not whatever this is....
+			'''
+
+
 			# Format Node:Length:Type:Millis
-			print "{0}:{1}:{2}:{3}".format(mote_addr, mote_payload_length, mote_payload_type,mills_count)
+			#hex_map = ''.join([binascii.b2a_hex(x) for x in socket_data])
+			#print "Full: {0}".format(hex_map)
+			hex_map = ''.join([binascii.b2a_hex(x) for x in socket_data[4:]])
+			print "Payload: {0}".format(hex_map)
+			
+			# Basic Convert from Little Endian .....
+			#
+			#START HERE
+
+			MILLIS_COUNT = struct.unpack('<L', hex_map.decode('hex'))[0]
+			
+			print "{0}:{1}:{2}:{3}".format(mote_addr, mote_payload_length, mote_payload_type,MILLIS_COUNT)
 		except:
 			pass
 		
@@ -135,6 +159,7 @@ if __name__ == '__main__':
 	try:
 		HOST,PORT = "0.0.0.0", 9999
 		server = SocketServer.TCPServer((HOST,PORT), TCPHandler)
+		server.allow_reuse_address = True
 		server.serve_forever()
 	except:
 		print "Got call to shutdown "
