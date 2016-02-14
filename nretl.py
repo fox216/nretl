@@ -23,25 +23,10 @@ class TCPHandler(SocketServer.BaseRequestHandler):
 
 	def handle(self):
 		self.data = self.request.recv(1024).strip()
-
 		#print "{} wrote:".format(self.client_address[0])
-
-		#print self.data
-
-		
 		## Dump data as ascii values
 		socket_data = self.data
-		#ascii_map = map(ord, socket_data)
-		#print ascii_map
 
-		## Dump data as hex values
-		#socket_data = self.data
-		#hex_map = hex(map(ord, socket_data))
-		#print hex_map
-
-		#hex_data =
-		#socket_data.replace(' ','').decode('hex')
-		#print hex_data
 		'''
 		long hand
 		for x in socket_data:
@@ -101,38 +86,29 @@ class TCPHandler(SocketServer.BaseRequestHandler):
 				#print "Valid Message"
 				mote_addr = int(mote_header[1])
 				mote_payload_length = int(mote_header[2]) 
-				mote_payload_type = int(mote_header[3]) 
-
-		
-
-				#if mote_payload_type == 10:
-					#print "Process Payload type 10"
-					#hex_map = ''.join([binascii.b2a_hex(x) for x in socket_data[4:]])
-					#conv_ascii = binascii.unhexlify(hex_map)
-					#end_conv = array.array('h', conv_ascii)
-					#end_conv.byteswap()
-					
-					#print "Little Endian"
-					#s = struct.Struct('<L')
-					#mills_count = (s.unpack_from(end_conv))[0]
-					#print ' - {0}'.format(mills_count)
-
-					
-					#print "Big Endian"
-					#s = struct.Struct('>L')
-					#print(s.unpack_from(end_conv))[0]
-				
+				mote_payload_type = int(mote_header[3]) 				
 					
 			'''
-			Notes: Conversion process is mangling values. 
+			Convert BIG ENDIAN Data to Little ENDIAN 
+
+			Data:
+
+			Fields 	-> 	Mote:Length:Type:Converted_Long:Raw_Data
+			Data 	-> 	44:5:10:394950000:70758a17
 			
+			Example 1
+			Payload: 70758a17 <- transmission & parsing is correct	
+
+			MILLIS_COUNT = struct.unpack('<L', '70758a17'.decode('hex'))[0] = 394950000
+
+			Example 2
+
 			Full: 0020050a15cd5b07
-			
 			Payload: 15cd5b07 <- transmission & parsing is correct	
 			
 			MILLIS_COUNT = struct.unpack('<L', '15cd5b07'.decode('hex'))[0] = 123456789
 
-			32:5:10:1527190989 <- Not whatever this is....
+		
 			'''
 
 
