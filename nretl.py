@@ -5,13 +5,9 @@
 
 import sys, json, os
 import SocketServer
-from ctypes import *
 import binascii
 import array
 import struct
-
-class msg_10 (Structure):
-	_fields_ = []
 
 
 class TCPHandler(SocketServer.BaseRequestHandler):
