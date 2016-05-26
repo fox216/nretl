@@ -19,7 +19,7 @@ if __name__ == '__main__':
 	HOST,PORT = "10.20.42.113", 9000
 	''' Turn on zone 1 for 5 Min '''
 	#in_byte_data = [0,50,3,20,0,21]
-	in_byte_data = [0,50,3,20,1,10]
+	#in_byte_data = [0,50,3,20,1,10]
 	#in_byte_data = [0,50,3,20,2,10] 	# ok relay 2
 	#in_byte_data = [0,50,3,20,3,10]  	# ok relay 3
 	
@@ -31,7 +31,7 @@ if __name__ == '__main__':
 	#in_byte_data = [0,50,3,20,9,21]
 	
 	''' Run Front Program Run zones 1-4'''
-	#in_byte_data = [0,64,3,30,70,34]
+	in_byte_data = [0,50,3,30,70,2]
 	
 	''' Run All Program Run zones 1-9 for 2 Min Each'''
 	#in_byte_data = [0,50,3,30,65,5]
