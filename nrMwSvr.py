@@ -9,18 +9,49 @@ import binascii
 import array
 import struct
 
+class SendToSerGateway():
+	# Sends output to nodered serial handler
+	def __init__(self):
+		self.HOST = pi07.emb.net
+		self.PORT = 9500
+
+
+	def 
 
 
 class MsgHandler(SocketServer.BaseRequestHandler):
-	# TCD Socket handler
+	'''
+	MsgHandler sevice listens on port 9050 for nodered msgs.
+	handler processes both JSON and RAW binary input. 
+	- Json messages are proccesed as commands from nodered http 
+ 	- RAW messages are procceed by commands from serial gateway.
+	'''
 
 	def handle(self):
+		'''
+		Generic handler for JSON & RAW Binary
+		'''
+
 		self.data = self.request.recv(1024).strip()
 		#print "{} wrote:".format(self.client_address[0])
 		## Dump data as ascii values
 		socket_data = self.data
-		#print "Read Header ..."
+		
 		try:
+			'''
+			Attempt to process message as JSON data 
+			'''
+			json_data = json.loads(socket_data)
+			#DEBUG
+			print json_data
+		except:
+			pass
+
+		try:
+			'''
+			Attempt to process message as RAW Binary
+			'''
+			# Get mote header Bytes 1-3
 			mote_header = map(ord, socket_data[:-3])
 
 			if mote_header[0] == 0:
