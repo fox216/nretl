@@ -3,20 +3,67 @@
 # IoT Binary senor data ETL
 #
 
-import sys, json, os
+import sys, json, os, time
 import SocketServer
+import socket
 import binascii
 import array
 import struct
 
-class SendToSerGateway():
+HOST = ''
+PORT = 9500
+sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+socket.bind((HOST,PORT))
+sock.listen(1)
+
+while True;
+	csock, caddr = socket.accept()
+	print "Connection from: {0}".format(caddr)
+	req = csock.recv(1024)
+	print "REQ: {0}".format(req)
+	try:
+		json_data = req.json.loads()
+
+		csock.sendall(json_data)
+	except:
+		#not Json so try other
+		
+
+"""
+class SendToGateway():
 	# Sends output to nodered serial handler
 	def __init__(self):
 		self.HOST = pi07.emb.net
 		self.PORT = 9500
 
 
-	def 
+	def _xmitOut(self):
+		'''
+		Transmit data to Socket Gateway  
+		'''
+		print "Creating Socket"
+		xmit_socket = socket(socket.AF_INET, socket.SOCK_STREAM)
+		xmit_socket.connect((self.HOST, self.PORT))
+		xmit_socket.sendall(self.msg)
+		time.sleet(1)
+		xmit_socket.close()
+
+	def _setMsg(self):
+		'''
+		Create message to send
+		'''
+		data_raw = [0,50,3,30,67,20]
+		data_hex = ''.join('{:02x}'.format(x) for x in data_raw)
+		self.msg = binascii.unhexlify(data_raw)
+		print "DEBUG MSG {0}".formt(self.msg)
+		 
+
+
+	def xmit(self):
+		print "Calling XMIT"
+		self._setMsg()
+		self._xmitOut()
+
 
 
 class MsgHandler(SocketServer.BaseRequestHandler):
@@ -36,16 +83,8 @@ class MsgHandler(SocketServer.BaseRequestHandler):
 		#print "{} wrote:".format(self.client_address[0])
 		## Dump data as ascii values
 		socket_data = self.data
-		
 		try:
-			'''
-			Attempt to process message as JSON data 
-			'''
-			json_data = json.loads(socket_data)
-			#DEBUG
-			print json_data
-		except:
-			pass
+			return socket_date.json.loads()
 
 		try:
 			'''
@@ -141,7 +180,7 @@ class MsgHandler(SocketServer.BaseRequestHandler):
 				
 
 				# Format Node:Length:Type:bt,si,ui,fp,db,sc:Hex Payload
-				print "{0}:{1}:{2}:{3}:{4}:{5}:{6}:{7}:{8}:{9}".format(
+				#print "{0}:{1}:{2}:{3}:{4}:{5}:{6}:{7}:{8}:{9}".format(
 					mote_addr, 
 					mote_payload_length, 
 					mote_payload_type,
@@ -162,13 +201,16 @@ class MsgHandler(SocketServer.BaseRequestHandler):
 if __name__ == '__main__':
 	# Run server
 	try:
-		HOST,PORT = "0.0.0.0", 9999
+		HOST,PORT = "0.0.0.0", 9050
 		server = SocketServer.TCPServer((HOST,PORT), MsgHandler)
 		server.allow_reuse_address = True
 		server.serve_forever()
+		if server.
 	except:
+		#pass
 		print "Got call to shutdown "
+		
 		server.server_close()
 		server.shutdown()
 
-
+"""
